@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        logstash-input-file使用 - undefined
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> 假如我不能, 我就一定要; 假如我一定要, 我就一定能。 </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>sqczm</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> 假如我不能, 我就一定要; 假如我一定要, 我就一定能。 </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        logstash-input-file使用
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-04-20 19:37:02</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#logstash" title="logstash">logstash</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>要学习该插件，第一步先让该插件跑起来再说<br>首先，我们创建一个文本文件, 文本文件的内容如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[sqczm@sqczm first]$ pwd</span><br><span class="line">/opt/logstash-6.7.1/demo/first</span><br><span class="line">[sqczm@sqczm first]$ more users.txt </span><br><span class="line">name: zhangsan, age: 21, addr: "中国 北京"</span><br><span class="line">name: lisi, age:20,addr:"美国"</span><br><span class="line">name:wangwu,age:19,addr:"beijing"</span><br></pre></td></tr></table></figure>
+
+<p>接下来，我们来配置一下logstash的配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[sqczm@sqczm first]$ pwd</span><br><span class="line">/opt/logstash-6.7.1/demo/first</span><br><span class="line">[sqczm@sqczm first]$ more first.conf </span><br><span class="line">input &#123;</span><br><span class="line">    file &#123;</span><br><span class="line">        path =&gt; ["/opt/logstash-6.7.1/demo/first/users.txt"]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">filter &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">output &#123;</span><br><span class="line">    stdout &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，我们来启动logstash</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[sqczm@sqczm logstash-6.7.1]$ pwd</span><br><span class="line">/opt/logstash-6.7.1</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ bin/logstash -f /opt/logstash-6.7.1/demo/first/first.conf</span><br><span class="line">Sending Logstash logs to /opt/logstash-6.7.1/logs which is now configured via log4j2.properties</span><br><span class="line">[2019-04-20T16:18:32,057][WARN ][logstash.config.source.multilocal] Ignoring the &apos;pipelines.yml&apos; file because modules or command line options are specified</span><br><span class="line">[2019-04-20T16:18:32,083][INFO ][logstash.runner          ] Starting Logstash &#123;&quot;logstash.version&quot;=&gt;&quot;6.7.1&quot;&#125;</span><br><span class="line">[2019-04-20T16:18:40,628][INFO ][logstash.pipeline        ] Starting pipeline &#123;:pipeline_id=&gt;&quot;main&quot;, &quot;pipeline.workers&quot;=&gt;4, &quot;pipeline.batch.size&quot;=&gt;125, &quot;pipeline.batch.delay&quot;=&gt;50&#125;</span><br><span class="line">[2019-04-20T16:18:41,060][INFO ][logstash.inputs.file     ] No sincedb_path set, generating one based on the &quot;path&quot; setting &#123;:sincedb_path=&gt;&quot;/opt/logstash-6.7.1/data/plugins/inputs/file/.sincedb_ccdcb2b886f0094c5a7fa2ddbbd759e3&quot;, :path=&gt;[&quot;/opt/logstash-6.7.1/demo/first/users.txt&quot;]&#125;</span><br><span class="line">[2019-04-20T16:18:41,112][INFO ][logstash.pipeline        ] Pipeline started successfully &#123;:pipeline_id=&gt;&quot;main&quot;, :thread=&gt;&quot;#&lt;Thread:0x2ed54826 run&gt;&quot;&#125;</span><br><span class="line">[2019-04-20T16:18:41,202][INFO ][logstash.agent           ] Pipelines running &#123;:count=&gt;1, :running_pipelines=&gt;[:main], :non_running_pipelines=&gt;[]&#125;</span><br><span class="line">[2019-04-20T16:18:41,248][INFO ][filewatch.observingtail  ] START, creating Discoverer, Watch with file and sincedb collections</span><br><span class="line">[2019-04-20T16:18:41,658][INFO ][logstash.agent           ] Successfully started Logstash API endpoint &#123;:port=&gt;9600&#125;</span><br></pre></td></tr></table></figure>
+
+<p>WTF，控制台居然没有打印文本信息？<br>先来看下官方文档，官方文档中有一个start_position的参数，官方的描述是这样的：<br><a href="https://www.elastic.co/guide/en/logstash/6.7/plugins-inputs-file.html" target="_blank" rel="noopener">logstash-input-file官方说明</a></p>
+<blockquote>
+<p><strong>start_position</strong></p>
+<ul>
+<li>Value can be any of: beginning, end</li>
+<li>Default value is “end” </li>
+</ul>
+<p>Choose where Logstash starts initially reading files: at the beginning or at the end. The default behavior treats files like live streams and thus starts at the end. If you have old data you want to import, set this to beginning.</p>
+<p>This option only modifies “first contact” situations where a file is new and not seen before, i.e. files that don’t have a current position recorded in a sincedb file read by Logstash. If a file has already been seen before, this option has no effect and the position recorded in the sincedb file will be used.</p>
+</blockquote>
+<p>现在我们应该明白了，如果该参数不设置，默认将从文件的末尾开始读取，也就是说为什么我们刚才启动后控制台没有打印文本的原因了。按照官方的描述我们将其设置为”beginning”，改完后的配置如下所示</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[sqczm@sqczm logstash-6.7.1]$ pwd</span><br><span class="line">/opt/logstash-6.7.1</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ more demo/first/first.conf </span><br><span class="line">input &#123;</span><br><span class="line">    file &#123;</span><br><span class="line">        path =&gt; ["/opt/logstash-6.7.1/demo/first/users.txt"]</span><br><span class="line">        start_position =&gt; "beginning"</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">filter &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">output &#123;</span><br><span class="line">    stdout &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改完毕后，我们继续继续启动</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[sqczm@sqczm logstash-6.7.1]$ pwd</span><br><span class="line">/opt/logstash-6.7.1</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ bin/logstash -f /opt/logstash-6.7.1/demo/first/first.conf</span><br><span class="line">Sending Logstash logs to /opt/logstash-6.7.1/logs which is now configured via log4j2.properties</span><br><span class="line">[2019-04-20T16:31:36,250][WARN ][logstash.config.source.multilocal] Ignoring the 'pipelines.yml' file because modules or command line options are specified</span><br><span class="line">[2019-04-20T16:31:36,274][INFO ][logstash.runner          ] Starting Logstash &#123;"logstash.version"=&gt;"6.7.1"&#125;</span><br><span class="line">[2019-04-20T16:31:44,536][INFO ][logstash.pipeline        ] Starting pipeline &#123;:pipeline_id=&gt;"main", "pipeline.workers"=&gt;4, "pipeline.batch.size"=&gt;125, "pipeline.batch.delay"=&gt;50&#125;</span><br><span class="line">[2019-04-20T16:31:44,864][INFO ][logstash.inputs.file     ] No sincedb_path set, generating one based on the "path" setting &#123;:sincedb_path=&gt;"/opt/logstash-6.7.1/data/plugins/inputs/file/.sincedb_ccdcb2b886f0094c5a7fa2ddbbd759e3", :path=&gt;["/opt/logstash-6.7.1/demo/first/users.txt"]&#125;</span><br><span class="line">[2019-04-20T16:31:44,915][INFO ][logstash.pipeline        ] Pipeline started successfully &#123;:pipeline_id=&gt;"main", :thread=&gt;"#&lt;Thread:0x5e479e9a run&gt;"&#125;</span><br><span class="line">[2019-04-20T16:31:45,008][INFO ][logstash.agent           ] Pipelines running &#123;:count=&gt;1, :running_pipelines=&gt;[:main], :non_running_pipelines=&gt;[]&#125;</span><br><span class="line">[2019-04-20T16:31:45,022][INFO ][filewatch.observingtail  ] START, creating Discoverer, Watch with file and sincedb collections</span><br><span class="line">[2019-04-20T16:31:45,443][INFO ][logstash.agent           ] Successfully started Logstash API endpoint &#123;:port=&gt;9600&#125;</span><br></pre></td></tr></table></figure>
+
+<p>WTF，等到花儿都谢了，楞是没等到输出任何文件内容，难道少配置参数了，我们继续来看官方文档</p>
+<blockquote>
+<p><strong>Tracking of current position in watched files edit</strong></p>
+<p>The plugin keeps track of the current position in each file by recording it in a separate file named sincedb. This makes it possible to stop and restart Logstash and have it pick up where it left off without missing the lines that were added to the file while Logstash was stopped.</p>
+<p>By default, the sincedb file is placed in the data directory of Logstash with a filename based on the filename patterns being watched (i.e. the path option). Thus, changing the filename patterns will result in a new sincedb file being used and any existing current position state will be lost. If you change your patterns with any frequency it might make sense to explicitly choose a sincedb path with the sincedb_path option.</p>
+<p>A different sincedb_path must be used for each input. Using the same path will cause issues. The read checkpoints for each input must be stored in a different path so the information does not override.</p>
+<p>Files are tracked via an identifier. This identifier is made up of the inode, major device number and minor device number. In windows, a different identifier is taken from a kernel32 API call.</p>
+<p>Sincedb records can now be expired meaning that read positions of older files will not be remembered after a certain time period. File systems may need to reuse inodes for new content. Ideally, we would not use the read position of old content, but we have no reliable way to detect that inode reuse has occurred. This is more relevant to Read mode where a great many files are tracked in the sincedb. Bear in mind though, if a record has expired, a previously seen file will be read again.</p>
+<p>Sincedb files are text files with four (&lt; v5.0.0), five or six columns:</p>
+<ol>
+<li>The inode number (or equivalent).</li>
+<li>The major device number of the file system (or equivalent).</li>
+<li>The minor device number of the file system (or equivalent).</li>
+<li>The current byte offset within the file.</li>
+<li>The last active timestamp (a floating point number)</li>
+<li>The last known path that this record was matched to (for old sincedb records converted to the new format, this is blank. </li>
+</ol>
+<p>On non-Windows systems you can obtain the inode number of a file with e.g. ls -li.</p>
+</blockquote>
+<p>官方说了，sincedb文件中记录了每个被监听文件的位置等信息，当我们logstash重启后就不需要再从头读取文件了。<br>接下来我们要做的就是将该文件删除，官方描述该文件在data目录下，我们来找下，找了半天你会神奇的发现该文件压根不存在，其实是我们错了，因为该文件是隐藏文件，所以我们没找到，好了，执行以下命令进行删除</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[sqczm@sqczm logstash-6.7.1]$ pwd</span><br><span class="line">/opt/logstash-6.7.1</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ ls data/plugins/inputs/file/</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ ls -a data/plugins/inputs/file/</span><br><span class="line">.  ..  .sincedb_ccdcb2b886f0094c5a7fa2ddbbd759e3</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ rm -rf data/plugins/inputs/file/.sincedb_ccdcb2b886f0094c5a7fa2ddbbd759e3</span><br></pre></td></tr></table></figure>
+
+<p>删除完毕后，我们继续启动logstash</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">[sqczm@sqczm logstash-6.7.1]$ pwd</span><br><span class="line">/opt/logstash-6.7.1</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ bin/logstash -f /opt/logstash-6.7.1/demo/first/first.conf</span><br><span class="line"></span><br><span class="line">Sending Logstash logs to /opt/logstash-6.7.1/logs which is now configured via log4j2.properties</span><br><span class="line">[2019-04-20T16:57:38,915][WARN ][logstash.config.source.multilocal] Ignoring the 'pipelines.yml' file because modules or command line options are specified</span><br><span class="line">[2019-04-20T16:57:38,939][INFO ][logstash.runner          ] Starting Logstash &#123;"logstash.version"=&gt;"6.7.1"&#125;</span><br><span class="line">[2019-04-20T16:57:47,643][INFO ][logstash.pipeline        ] Starting pipeline &#123;:pipeline_id=&gt;"main", "pipeline.workers"=&gt;4, "pipeline.batch.size"=&gt;125, "pipeline.batch.delay"=&gt;50&#125;</span><br><span class="line">[2019-04-20T16:57:48,093][INFO ][logstash.inputs.file     ] No sincedb_path set, generating one based on the "path" setting &#123;:sincedb_path=&gt;"/opt/logstash-6.7.1/data/plugins/inputs/file/.sincedb_ccdcb2b886f0094c5a7fa2ddbbd759e3", :path=&gt;["/opt/logstash-6.7.1/demo/first/users.txt"]&#125;</span><br><span class="line">[2019-04-20T16:57:48,145][INFO ][logstash.pipeline        ] Pipeline started successfully &#123;:pipeline_id=&gt;"main", :thread=&gt;"#&lt;Thread:0xc6ca077 run&gt;"&#125;</span><br><span class="line">[2019-04-20T16:57:48,233][INFO ][logstash.agent           ] Pipelines running &#123;:count=&gt;1, :running_pipelines=&gt;[:main], :non_running_pipelines=&gt;[]&#125;</span><br><span class="line">[2019-04-20T16:57:48,251][INFO ][filewatch.observingtail  ] START, creating Discoverer, Watch with file and sincedb collections</span><br><span class="line">[2019-04-20T16:57:48,693][INFO ][logstash.agent           ] Successfully started Logstash API endpoint &#123;:port=&gt;9600&#125;</span><br><span class="line">/opt/logstash-6.7.1/vendor/bundle/jruby/2.5.0/gems/awesome_print-1.7.0/lib/awesome_print/formatters/base_formatter.rb:31: warning: constant ::Fixnum is deprecated</span><br><span class="line">&#123;</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T08:57:48.917Z,</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/first/users.txt",</span><br><span class="line">          "host" =&gt; "sqczm",</span><br><span class="line">       "message" =&gt; "name: lisi, age:20,addr:\"美国\""</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T08:57:48.886Z,</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/first/users.txt",</span><br><span class="line">          "host" =&gt; "sqczm",</span><br><span class="line">       "message" =&gt; "name: zhangsan, age: 21, addr: \"中国 北京\""</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T08:57:48.918Z,</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/first/users.txt",</span><br><span class="line">          "host" =&gt; "sqczm",</span><br><span class="line">       "message" =&gt; "name:wangwu,age:19,addr:\"beijing\""</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>心情无比激动呐，终于看到了文本内容，接下来再来改造下，其实大家在看的时候发现我伪造的数据其实想表现一种json格式，我们把配置文件继续改造下。<br>修改配置文件，将其设置为json格式</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[sqczm@sqczm logstash-6.7.1]$ pwd</span><br><span class="line">/opt/logstash-6.7.1</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ more demo/first/first.conf </span><br><span class="line">input &#123;</span><br><span class="line">    file &#123;</span><br><span class="line">        path =&gt; ["/opt/logstash-6.7.1/demo/first/users.txt"]</span><br><span class="line">        start_position =&gt; "beginning"</span><br><span class="line">        codec =&gt; "json"</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">filter &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">output &#123;</span><br><span class="line">    stdout &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改完后记得删除sincedb文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">sqczm@sqczm logstash-6.7.1]$ pwd</span><br><span class="line">/opt/logstash-6.7.1</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ rm -rf data/plugins/inputs/file/.sincedb_ccdcb2b886f0094c5a7fa2ddbbd759e3 </span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ bin/logstash -f /opt/logstash-6.7.1/demo/first/first.conf</span><br><span class="line">……省略部分输出……</span><br><span class="line">&#123;</span><br><span class="line">          "tags" =&gt; [</span><br><span class="line">        [0] "_jsonparsefailure"</span><br><span class="line">    ],</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T11:48:45.377Z,</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/first/users.txt",</span><br><span class="line">          "host" =&gt; "sqczm",</span><br><span class="line">       "message" =&gt; "name: lisi, age:20,addr:\"美国\""</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">          "tags" =&gt; [</span><br><span class="line">        [0] "_jsonparsefailure"</span><br><span class="line">    ],</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T11:48:45.332Z,</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/first/users.txt",</span><br><span class="line">          "host" =&gt; "sqczm",</span><br><span class="line">       "message" =&gt; "name: zhangsan, age: 21, addr: \"中国 北京\""</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">          "tags" =&gt; [</span><br><span class="line">        [0] "_jsonparsefailure"</span><br><span class="line">    ],</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T11:48:45.381Z,</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/first/users.txt",</span><br><span class="line">          "host" =&gt; "sqczm",</span><br><span class="line">       "message" =&gt; "name:wangwu,age:19,addr:\"beijing\""</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看着结果很奔溃呐，tags节点的错误信息是json解析出错，忽然一看我构造的数据压根不是json格式，赶紧修改下。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[sqczm@sqczm logstash-6.7.1]$ pwd</span><br><span class="line">/opt/logstash-6.7.1</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ more demo/first/users.txt </span><br><span class="line">&#123;"name": "zhangsan", "age": 21, "addr": "中国 北京"&#125;</span><br><span class="line">&#123;"name": "lisi", "age":20,"addr":"美国"&#125;</span><br><span class="line">&#123;"name":"wangwu","age":19,"addr":"beijing"&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改完毕后，我们赶紧删除sincedb文件后重启</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">sqczm@sqczm logstash-6.7.1]$ pwd</span><br><span class="line">/opt/logstash-6.7.1</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ rm -rf data/plugins/inputs/file/.sincedb_ccdcb2b886f0094c5a7fa2ddbbd759e3 </span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ bin/logstash -f /opt/logstash-6.7.1/demo/first/first.conf</span><br><span class="line">……省略部分输出……</span><br><span class="line">&#123;</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/first/users.txt",</span><br><span class="line">          "name" =&gt; "zhangsan",</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T11:54:55.419Z,</span><br><span class="line">           "age" =&gt; 21,</span><br><span class="line">          "addr" =&gt; "中国 北京",</span><br><span class="line">          "host" =&gt; "sqczm"</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/first/users.txt",</span><br><span class="line">          "name" =&gt; "lisi",</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T11:54:55.460Z,</span><br><span class="line">           "age" =&gt; 20,</span><br><span class="line">          "addr" =&gt; "美国",</span><br><span class="line">          "host" =&gt; "sqczm"</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/first/users.txt",</span><br><span class="line">          "name" =&gt; "wangwu",</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T11:54:55.462Z,</span><br><span class="line">           "age" =&gt; 19,</span><br><span class="line">          "addr" =&gt; "beijing",</span><br><span class="line">          "host" =&gt; "sqczm"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到此，我们logstash-input-file插件的例子到此结束，其他属性可以看官方文档进行练习。</p>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>

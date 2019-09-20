@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        logstash命令行参数详解 - undefined
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> 假如我不能, 我就一定要; 假如我一定要, 我就一定能。 </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>sqczm</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> 假如我不能, 我就一定要; 假如我一定要, 我就一定能。 </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        logstash命令行参数详解
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-04-20 13:11:32</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#logstash" title="logstash">logstash</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>在上一节中我们已经对logstash做了简单的安装和测试，这一节我们来看一下logstash的启动命令<br>我们来看下logstash的启动参数有哪些吧，执行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br></pre></td><td class="code"><pre><span class="line">[sqczm@sqczm logstash-6.7.1]$ pwd</span><br><span class="line">/opt/logstash-6.7.1</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ bin/logstash -h</span><br><span class="line">Usage:</span><br><span class="line">    bin/logstash [OPTIONS]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">    -n, --node.name NAME          Specify the name of this logstash instance, if no value is given</span><br><span class="line">                                  it will default to the current hostname.</span><br><span class="line">                                   (default: &quot;sqczm&quot;)</span><br><span class="line">    -f, --path.config CONFIG_PATH Load the logstash config from a specific file</span><br><span class="line">                                  or directory.  If a directory is given, all</span><br><span class="line">                                  files in that directory will be concatenated</span><br><span class="line">                                  in lexicographical order and then parsed as a</span><br><span class="line">                                  single config file. You can also specify</span><br><span class="line">                                  wildcards (globs) and any matched files will</span><br><span class="line">                                  be loaded in the order described above.</span><br><span class="line">    -e, --config.string CONFIG_STRING Use the given string as the configuration</span><br><span class="line">                                  data. Same syntax as the config file. If no</span><br><span class="line">                                  input is specified, then the following is</span><br><span class="line">                                  used as the default input:</span><br><span class="line">                                  &quot;input &#123; stdin &#123; type =&gt; stdin &#125; &#125;&quot;</span><br><span class="line">                                  and if no output is specified, then the</span><br><span class="line">                                  following is used as the default output:</span><br><span class="line">                                  &quot;output &#123; stdout &#123; codec =&gt; rubydebug &#125; &#125;&quot;</span><br><span class="line">                                  If you wish to use both defaults, please use</span><br><span class="line">                                  the empty string for the &apos;-e&apos; flag.</span><br><span class="line">                                   (default: nil)</span><br><span class="line">    --field-reference-parser MODE Use the given MODE when parsing field</span><br><span class="line">                                  references.</span><br><span class="line">                                  </span><br><span class="line">                                  The field reference parser is used to expand</span><br><span class="line">                                  field references in your pipeline configs,</span><br><span class="line">                                  and will be becoming more strict to better</span><br><span class="line">                                  handle illegal and ambbiguous inputs in a</span><br><span class="line">                                  future release of Logstash.</span><br><span class="line">                                  </span><br><span class="line">                                  Available MODEs are:</span><br><span class="line">                                   - `LEGACY`: parse with the legacy parser,</span><br><span class="line">                                     which is known to handle ambiguous- and</span><br><span class="line">                                     illegal-syntax in surprising ways;</span><br><span class="line">                                     warnings will not be emitted.</span><br><span class="line">                                   - `COMPAT`: warn once for each distinct</span><br><span class="line">                                     ambiguous- or illegal-syntax input, but</span><br><span class="line">                                     continue to expand field references with</span><br><span class="line">                                     the legacy parser.</span><br><span class="line">                                   - `STRICT`: parse in a strict manner; when</span><br><span class="line">                                     given ambiguous- or illegal-syntax input,</span><br><span class="line">                                     raises a runtime exception that should</span><br><span class="line">                                     be handled by the calling plugin.</span><br><span class="line">                                  </span><br><span class="line">                                   The MODE can also be set with</span><br><span class="line">                                   `config.field_reference.parser`</span><br><span class="line">                                  </span><br><span class="line">                                   (default: &quot;COMPAT&quot;)</span><br><span class="line">    --modules MODULES             Load Logstash modules.</span><br><span class="line">                                  Modules can be defined using multiple instances</span><br><span class="line">                                  &apos;--modules module1 --modules module2&apos;,</span><br><span class="line">                                     or comma-separated syntax</span><br><span class="line">                                  &apos;--modules=module1,module2&apos;</span><br><span class="line">                                  Cannot be used in conjunction with &apos;-e&apos; or &apos;-f&apos;</span><br><span class="line">                                  Use of &apos;--modules&apos; will override modules declared</span><br><span class="line">                                  in the &apos;logstash.yml&apos; file.</span><br><span class="line">    -M, --modules.variable MODULES_VARIABLE Load variables for module template.</span><br><span class="line">                                  Multiple instances of &apos;-M&apos; or</span><br><span class="line">                                  &apos;--modules.variable&apos; are supported.</span><br><span class="line">                                  Ignored if &apos;--modules&apos; flag is not used.</span><br><span class="line">                                  Should be in the format of</span><br><span class="line">                                  &apos;-M &quot;MODULE_NAME.var.PLUGIN_TYPE.PLUGIN_NAME.VARIABLE_NAME=VALUE&quot;&apos;</span><br><span class="line">                                  as in</span><br><span class="line">                                  &apos;-M &quot;example.var.filter.mutate.fieldname=fieldvalue&quot;&apos;</span><br><span class="line">    --setup                       Load index template into Elasticsearch, and saved searches, </span><br><span class="line">                                  index-pattern, visualizations, and dashboards into Kibana when</span><br><span class="line">                                  running modules.</span><br><span class="line">                                   (default: false)</span><br><span class="line">    --cloud.id CLOUD_ID           Sets the elasticsearch and kibana host settings for</span><br><span class="line">                                  module connections in Elastic Cloud.</span><br><span class="line">                                  Your Elastic Cloud User interface or the Cloud support</span><br><span class="line">                                  team should provide this.</span><br><span class="line">                                  Add an optional label prefix &apos;&lt;label&gt;:&apos; to help you</span><br><span class="line">                                  identify multiple cloud.ids.</span><br><span class="line">                                  e.g. &apos;staging:dXMtZWFzdC0xLmF3cy5mb3VuZC5pbyRub3RhcmVhbCRpZGVudGlmaWVy&apos;</span><br><span class="line">    --cloud.auth CLOUD_AUTH       Sets the elasticsearch and kibana username and password</span><br><span class="line">                                  for module connections in Elastic Cloud</span><br><span class="line">                                  e.g. &apos;username:&lt;password&gt;&apos;</span><br><span class="line">    --pipeline.id ID              Sets the ID of the pipeline.</span><br><span class="line">                                   (default: &quot;main&quot;)</span><br><span class="line">    -w, --pipeline.workers COUNT  Sets the number of pipeline workers to run.</span><br><span class="line">                                   (default: 4)</span><br><span class="line">    --java-execution              Use Java execution engine.</span><br><span class="line">                                   (default: false)</span><br><span class="line">    -b, --pipeline.batch.size SIZE Size of batches the pipeline is to work in.</span><br><span class="line">                                   (default: 125)</span><br><span class="line">    -u, --pipeline.batch.delay DELAY_IN_MS When creating pipeline batches, how long to wait while polling</span><br><span class="line">                                  for the next event.</span><br><span class="line">                                   (default: 50)</span><br><span class="line">    --pipeline.unsafe_shutdown    Force logstash to exit during shutdown even</span><br><span class="line">                                  if there are still inflight events in memory.</span><br><span class="line">                                  By default, logstash will refuse to quit until all</span><br><span class="line">                                  received events have been pushed to the outputs.</span><br><span class="line">                                   (default: false)</span><br><span class="line">    --path.data PATH              This should point to a writable directory. Logstash</span><br><span class="line">                                  will use this directory whenever it needs to store</span><br><span class="line">                                  data. Plugins will also have access to this path.</span><br><span class="line">                                   (default: &quot;/opt/logstash-6.7.1/data&quot;)</span><br><span class="line">    -p, --path.plugins PATH       A path of where to find plugins. This flag</span><br><span class="line">                                  can be given multiple times to include</span><br><span class="line">                                  multiple paths. Plugins are expected to be</span><br><span class="line">                                  in a specific directory hierarchy:</span><br><span class="line">                                  &apos;PATH/logstash/TYPE/NAME.rb&apos; where TYPE is</span><br><span class="line">                                  &apos;inputs&apos; &apos;filters&apos;, &apos;outputs&apos; or &apos;codecs&apos;</span><br><span class="line">                                  and NAME is the name of the plugin.</span><br><span class="line">                                   (default: [])</span><br><span class="line">    -l, --path.logs PATH          Write logstash internal logs to the given</span><br><span class="line">                                  file. Without this flag, logstash will emit</span><br><span class="line">                                  logs to standard output.</span><br><span class="line">                                   (default: &quot;/opt/logstash-6.7.1/logs&quot;)</span><br><span class="line">    --log.level LEVEL             Set the log level for logstash. Possible values are:</span><br><span class="line">                                    - fatal</span><br><span class="line">                                    - error</span><br><span class="line">                                    - warn</span><br><span class="line">                                    - info</span><br><span class="line">                                    - debug</span><br><span class="line">                                    - trace</span><br><span class="line">                                   (default: &quot;info&quot;)</span><br><span class="line">    --config.debug                Print the compiled config ruby code out as a debug log (you must also have --log.level=debug enabled).</span><br><span class="line">                                  WARNING: This will include any &apos;password&apos; options passed to plugin configs as plaintext, and may result</span><br><span class="line">                                  in plaintext passwords appearing in your logs!</span><br><span class="line">                                   (default: false)</span><br><span class="line">    -i, --interactive SHELL       Drop to shell instead of running as normal.</span><br><span class="line">                                  Valid shells are &quot;irb&quot; and &quot;pry&quot;</span><br><span class="line">    -V, --version                 Emit the version of logstash and its friends,</span><br><span class="line">                                  then exit.</span><br><span class="line">    -t, --config.test_and_exit    Check configuration for valid syntax and then exit.</span><br><span class="line">                                   (default: false)</span><br><span class="line">    -r, --config.reload.automatic Monitor configuration changes and reload</span><br><span class="line">                                  whenever it is changed.</span><br><span class="line">                                  NOTE: use SIGHUP to manually reload the config</span><br><span class="line">                                   (default: false)</span><br><span class="line">    --config.reload.interval RELOAD_INTERVAL How frequently to poll the configuration location</span><br><span class="line">                                  for changes, in seconds.</span><br><span class="line">                                   (default: 3000000000)</span><br><span class="line">    --http.host HTTP_HOST         Web API binding host (default: &quot;127.0.0.1&quot;)</span><br><span class="line">    --http.port HTTP_PORT         Web API http port (default: 9600..9700)</span><br><span class="line">    --log.format FORMAT           Specify if Logstash should write its own logs in JSON form (one</span><br><span class="line">                                  event per line) or in plain text (using Ruby&apos;s Object#inspect)</span><br><span class="line">                                   (default: &quot;plain&quot;)</span><br><span class="line">    --path.settings SETTINGS_DIR  Directory containing logstash.yml file. This can also be</span><br><span class="line">                                  set through the LS_SETTINGS_DIR environment variable.</span><br><span class="line">                                   (default: &quot;/opt/logstash-6.7.1/config&quot;)</span><br><span class="line">    --verbose                     Set the log level to info.</span><br><span class="line">                                  DEPRECATED: use --log.level=info instead.</span><br><span class="line">    --debug                       Set the log level to debug.</span><br><span class="line">                                  DEPRECATED: use --log.level=debug instead.</span><br><span class="line">    --quiet                       Set the log level to info.</span><br><span class="line">                                  DEPRECATED: use --log.level=info instead.</span><br><span class="line">    -h, --help                    print help</span><br></pre></td></tr></table></figure>
+
+<p>接下来简单对命令行的参数做个说明，因每个参数的后面都有英文介绍，介绍的都很详细，所以我只列出我认为常用的或后续要用到几个参数。</p>
+<ol>
+<li><p>-n<br>logstash实例的名称，如果不设置默认为当前的主机名(比如我的主机名为sqczm)。</p>
+</li>
+<li><p>-f<br>配置文件，我们可以指定一个特定的文件，也可以指定一个特定的目录，如果指定的是特定的目录，则logstash会读取该目录下的所有文本文件，将其在内存中拼接成完整的大配置文件，再去执行。</p>
+</li>
+<li><p>-e<br>给定的可直接执行的配置内容，也就是说我们可以不指定-f参数，直接把配置文件中的内容作为字符串放到-e参数后面。</p>
+</li>
+<li><p>-w<br>指定工作线程的个数</p>
+</li>
+<li><p>-p<br>logstash用来加载插件的目录</p>
+</li>
+<li><p>-l<br>日志输出文件，如果不设置，logstash将会把日志发送至标准的output</p>
+</li>
+<li><p>-t<br>检查配置的语法是否正确并退出</p>
+</li>
+<li><p>-r<br>监视配置文件的变化，并且自动重新加载修改后的配置文件</p>
+</li>
+<li><p>–config.reload.interval RELOAD_INTERVAL<br>为了检查配置文件是否改变，而去拉取配置文件的频率</p>
+</li>
+<li><p>–http.host HTTP_HOST<br>Web API绑定的主机，默认为“127.0.0.1”</p>
+</li>
+<li><p>–http.port HTTP_PORT<br>Web API绑定的端口，默认为9600-9700之间</p>
+</li>
+<li><p>–log.format FORMAT<br>logstash写它自身日志的时候使用json还是文本格式，默认是“plain”</p>
+</li>
+<li><p>–path.settings SETTINGS_DIR<br>设置包含logstash.yml配置文件的目录，比如log4j日志配置。也可以设置LS_SETTINGS_DIR环境变量</p>
+</li>
+</ol>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>

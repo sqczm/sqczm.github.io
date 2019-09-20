@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        logstash的filter配置 - undefined
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> 假如我不能, 我就一定要; 假如我一定要, 我就一定能。 </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>sqczm</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> 假如我不能, 我就一定要; 假如我一定要, 我就一定能。 </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        logstash的filter配置
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-04-20 21:28:52</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#logstash" title="logstash">logstash</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>前一篇我们已经学会了logstash-input-file插件的用法，我们现在在上一篇的基础上来学习一下filter。<br>首先呢，还是来伪造数据</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">[sqczm@sqczm logstash-6.7.1]$ pwd</span><br><span class="line">/opt/logstash-6.7.1</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ ls demo/second/</span><br><span class="line">events.txt  second.conf</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ more demo/second/events.txt </span><br><span class="line">2019-04-20 20:21:00 64 bytes from 8.8.8.8: icmp_seq=1 ttl=64 time=1.720 ms</span><br><span class="line">2019-04-20 20:21:01 64 bytes from 8.8.8.8: icmp_seq=2 ttl=64 time=2.197 ms</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ more demo/second/second.conf </span><br><span class="line">input &#123;</span><br><span class="line">    file &#123;</span><br><span class="line">        path =&gt; ["/opt/logstash-6.7.1/demo/second/events.txt"]</span><br><span class="line">        start_position =&gt; "beginning"</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">filter &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">output &#123;</span><br><span class="line">    stdout &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ bin/logstash -f demo/second/second.conf </span><br><span class="line">……中间省略部分输出……</span><br><span class="line">&#123;</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">          "host" =&gt; "sqczm",</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T12:28:58.365Z,</span><br><span class="line">       "message" =&gt; "2019-04-20 20:21:01 64 bytes from 8.8.8.8: icmp_seq=2 ttl=64 time=2.197 ms",</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/second/events.txt"</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">          "host" =&gt; "sqczm",</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T12:28:58.323Z,</span><br><span class="line">       "message" =&gt; "2019-04-20 20:21:00 64 bytes from 8.8.8.8: icmp_seq=1 ttl=64 time=1.720 ms",</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/second/events.txt"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们来看上面的数据，其实我的想法很简单，就是想完成以下功能：</p>
+<ol>
+<li>将输出中的@timestamp字段设置为message字段中的时间</li>
+<li>将message中的信息提取出来其他几个属性：bytes、ip、icmp_seq、ttl、time</li>
+</ol>
+<p>带着上面的这个疑问，我们来看如何实现。<br>首先，我们需要先把@timestamp字段给替换掉，要替换这个字段我们就需要logstash-filter-date这个插件了，有关该插件的详细说明可以看下面的网址<br><a href="https://www.elastic.co/guide/en/logstash/6.7/plugins-filters-date.html" target="_blank" rel="noopener">logstash-filter-date详细说明</a><br>貌似我们了解了logstash-filter-date这个插件还不够，我们还需要了解另一个插件，这个插件就是logstash-filter-grok，因为要用它来写正则解析文本的信息，有关该插件的详细说明可以看下面的网址<br><a href="https://www.elastic.co/guide/en/logstash/6.7/plugins-filters-grok.html" target="_blank" rel="noopener">logstash-filter-grok详细说明</a></p>
+<p>了解完上面两个插件后，我们就来实现我们的需求功能</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">[sqczm@sqczm logstash-6.7.1]$ pwd</span><br><span class="line">/opt/logstash-6.7.1</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ rm data/plugins/inputs/file/.sincedb_814435f84c5f13c338c4625fd2af163b </span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ more demo/second/second.conf </span><br><span class="line">input &#123;</span><br><span class="line">    file &#123;</span><br><span class="line">        path =&gt; ["/opt/logstash-6.7.1/demo/second/events.txt"]</span><br><span class="line">        start_position =&gt; "beginning"</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">filter &#123;</span><br><span class="line">    grok &#123;</span><br><span class="line">        match =&gt; &#123; "message" =&gt; "%&#123;TIMESTAMP_ISO8601:logdate&#125; %&#123;NUMBER:bytes&#125; by</span><br><span class="line">tes from %&#123;IP:ip&#125;: icmp_seq=%&#123;NUMBER:icmp_seq&#125; ttl=%&#123;NUMBER:ttl&#125; time=%&#123;NUMBER:t</span><br><span class="line">ime&#125; ms" &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    date &#123;</span><br><span class="line">        match =&gt; [ "logdate", "yyyy-MM-dd HH:mm:ss"]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">output &#123;</span><br><span class="line">    stdout &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">[sqczm@sqczm logstash-6.7.1]$ bin/logstash -f demo/second/second.conf </span><br><span class="line">……省略部分输出内容……</span><br><span class="line">&#123;</span><br><span class="line">       "message" =&gt; "2019-04-20 20:21:01 64 bytes from 8.8.8.8: icmp_seq=2 ttl=64 time=2.197 ms",</span><br><span class="line">      "icmp_seq" =&gt; "2",</span><br><span class="line">          "host" =&gt; "sqczm",</span><br><span class="line">         "bytes" =&gt; "64",</span><br><span class="line">            "ip" =&gt; "8.8.8.8",</span><br><span class="line">          "time" =&gt; "2.197",</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/second/events.txt",</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">       "logdate" =&gt; "2019-04-20 20:21:01",</span><br><span class="line">           "ttl" =&gt; "64",</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T12:21:01.000Z</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">       "message" =&gt; "2019-04-20 20:21:00 64 bytes from 8.8.8.8: icmp_seq=1 ttl=64 time=1.720 ms",</span><br><span class="line">      "icmp_seq" =&gt; "1",</span><br><span class="line">          "host" =&gt; "sqczm",</span><br><span class="line">         "bytes" =&gt; "64",</span><br><span class="line">            "ip" =&gt; "8.8.8.8",</span><br><span class="line">          "time" =&gt; "1.720",</span><br><span class="line">          "path" =&gt; "/opt/logstash-6.7.1/demo/second/events.txt",</span><br><span class="line">      "@version" =&gt; "1",</span><br><span class="line">       "logdate" =&gt; "2019-04-20 20:21:00",</span><br><span class="line">           "ttl" =&gt; "64",</span><br><span class="line">    "@timestamp" =&gt; 2019-04-20T12:21:00.000Z</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至此，我们的功能已经实现完毕，插件中比较麻烦的就是grok部分，其实上该插件已经帮我们提供了很多的正则，官方文档中已经说明了，这些正则可以在以下的网址中找到<br><a href="https://github.com/logstash-plugins/logstash-patterns-core/tree/master/patterns" target="_blank" rel="noopener">内置的正则</a><br>当然你自己写正则的话，可以使用以下网址进行验证<br><a href="http://grokdebug.herokuapp.com/" target="_blank" rel="noopener">Grok正则验证</a></p>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
